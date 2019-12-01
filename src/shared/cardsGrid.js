@@ -4,7 +4,7 @@ import WeatherCard from "./weatherCard";
 
 const CardsGrid = ({ cards }) => {
   return (
-    <Grid justify="space-around" container>
+    <Grid justify="center" container>
       {cards.map((card, i) => {
         return (
           <Grid key={i} item xs={12} md={"auto"}>

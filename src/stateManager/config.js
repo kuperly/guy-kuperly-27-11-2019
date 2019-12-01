@@ -2,3 +2,6 @@ export const GET_CURRENT_WEATHER = "GET_CURRENT_WEATHER";
 export const IS_LOADING = "IS_LOADING";
 export const SET_ERROR = "SET_ERROR";
 export const SELECT_CITY = "SELECT_CITY";
+export const GET_WEEK_WEATHER = "GET_WEEK_WEATHER";
+export const TOGGLE_FAVORITE = "TOGGLE_FAVORITE";
+export const TOGGLE_DARK_MODE = "TOGGLE_DARK_MODE";

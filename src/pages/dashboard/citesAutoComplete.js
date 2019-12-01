@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useContext } from "react";
-import axios from "axios";
+import React, { useEffect, useContext } from "react";
+import axios from "../../axios-config";
+import CONSTANCE from "../../constance";
 
-import { StateContext } from "../../hooks/stateContext";
+import { StateContext } from "../../stateManager/stateContext";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import TextField from "@material-ui/core/TextField";
 
@@ -11,20 +12,25 @@ const CitiesAutocomplete = () => {
   const [options, setOptions] = React.useState([]);
 
   useEffect(() => {
-    // axios.get(`http://dataservice.accuweather.com/locations/v1/cities/autocomplete?apikey=qkPKdT2prm4JV8FmFlpVPGq1hEQFDIAQ&q=${inputValue}`).then((res)=> {
-    axios.get("assets/stubs/autocomplete.json").then(res => {
-      const value = res.data ? res.data : [];
-      setOptions(value);
-    });
+    axios
+      // .get("assets/stubs/autocomplete.json")
+      .get(
+        `locations/v1/cities/autocomplete?apikey=${CONSTANCE.key}&q=${inputValue}`
+      )
+      .then(res => {
+        const value = res.data ? res.data : [];
+        setOptions(value);
+      })
+      .catch(err => console.log(err));
   }, [inputValue]);
 
   const handleChange = val => {
     setInputValue(val);
   };
   const hendleSelectedCity = data => {
-    debugger;
+    if (!data) return;
     const { Key, LocalizedName } = data;
-    selectedCity({ key: Key, LocalizedName });
+    selectedCity({ key: Key, name: LocalizedName });
   };
 
   return (
@@ -32,13 +38,19 @@ const CitiesAutocomplete = () => {
       id="weather-data"
       options={options}
       getOptionLabel={option => option.LocalizedName || ""}
-      includeInputInList
       freeSolo
+      disableClearable
       onChange={(ev, value) => hendleSelectedCity(value)}
       onInputChange={(ev, val) => handleChange(val)}
       disableOpenOnFocus
       renderInput={params => (
-        <TextField {...params} variant="outlined" label="Select city" />
+        <TextField
+          {...params}
+          variant="outlined"
+          InputProps={{ ...params.InputProps, type: "search" }}
+          margin="normal"
+          label="Select city"
+        />
       )}
       renderOption={option => {
         return <div key={option.LocalizedName}>{option.LocalizedName}</div>;

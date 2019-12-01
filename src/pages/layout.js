@@ -1,6 +1,9 @@
-import React from "react";
+import React, { useContext } from "react";
 import Header from "../shared/header";
 import Grid from "@material-ui/core/Grid";
+import { StateContext } from "../stateManager/stateContext";
+import { ThemeProvider, createMuiTheme } from "@material-ui/core/styles";
+
 import {
   BrowserRouter as Router,
   Switch,
@@ -11,20 +14,30 @@ import Dashboard from "./dashboard";
 import Favorites from "./favorites";
 
 const Layout = props => {
+  const {
+    state: { darkMode }
+  } = useContext(StateContext);
+  const theme = createMuiTheme({
+    palette: {
+      type: darkMode ? "dark" : "light"
+    }
+  });
   return (
     <>
-      <Router>
-        <Header />
-        <Grid container>
-          <Grid item xs={12}>
-            <Switch>
-              <Route path="/dashboard" component={Dashboard} />
-              <Route path="/favorites" component={Favorites} />
-              <Redirect to="/dashboard" />
-            </Switch>
+      <ThemeProvider theme={theme}>
+        <Router>
+          <Header />
+          <Grid style={{ paddingTop: 60 }} container>
+            <Grid item xs={12}>
+              <Switch>
+                <Route path="/dashboard" component={Dashboard} />
+                <Route path="/favorites" component={Favorites} />
+                <Redirect to="/dashboard" />
+              </Switch>
+            </Grid>
           </Grid>
-        </Grid>
-      </Router>
+        </Router>
+      </ThemeProvider>
     </>
   );
 };

@@ -1,72 +1,92 @@
-import React, { useState, useEffect, useContext } from "react";
-import axios from "axios";
+import React, { useContext } from "react";
 
-import { StateContext } from "../../hooks/stateContext";
+import { StateContext } from "../../stateManager/stateContext";
 import CitiesAutocomplete from "./citesAutoComplete";
 import { makeStyles } from "@material-ui/core/styles";
 
 import Grid from "@material-ui/core/Grid";
+import Box from "@material-ui/core/Box";
 
-import IconButton from "@material-ui/core/IconButton";
-import FavoriteIcon from "@material-ui/icons/Favorite";
+import Typography from "@material-ui/core/Typography";
 
 import { Container } from "@material-ui/core";
 import CardsGrid from "../../shared/cardsGrid";
+import FavoriteButton from "../../shared/favoriteBTN";
+import Spinner from "../../shared/Spinner/Spinner";
 
-const useStyles = makeStyles(theme => ({}));
+const useStyles = makeStyles(theme => ({
+  mainTitle: {
+    padding: 25
+  },
+  localWeatherWrapper: {
+    position: "relative"
+  },
+  fab: {
+    position: "absolute",
+    bottom: 0,
+    right: 0
+  }
+}));
 
 function Dashboard() {
   const {
-    state: { currentWeather, isLoading, selectedCity }
+    state: { currentWeather, isLoading, weekData }
   } = useContext(StateContext);
   const classes = useStyles();
 
-  const key = "qkPKdT2prm4JV8FmFlpVPGq1hEQFDIAQ";
-
-  const [data, setData] = useState();
-  const [currentData, setCurrentData] = useState();
-
-  useEffect(() => {
-    // axios.get(`http://dataservice.accuweather.com/forecasts/v1/daily/5day/${selectedId}?apikey=${key}&details=true&metric=true`).then((res) => {
-    axios.get("assets/stubs/5-days.json").then(res => {
-      setData(res.data);
-    });
-  }, []);
-
-  const daysArea = data && (
+  const daysArea = weekData && (
     <>
-      <div className={classes.mainTitle}>{data.Headline.Text}</div>
-      <CardsGrid cards={data.DailyForecasts}></CardsGrid>
+      <Typography
+        className={classes.mainTitle}
+        variant="h4"
+        component="h1"
+        color="textSecondary"
+      >
+        {weekData.Headline.Text}
+      </Typography>
+      <CardsGrid cards={weekData.DailyForecasts}></CardsGrid>
     </>
   );
 
   return (
-    <Container fixed style={{ border: "1px solid" }}>
-      <Grid container>
-        <Grid item xs={12}>
+    <Container fixed style={{ paddingTop: 40 }}>
+      <Grid alignItems="center" container>
+        <Grid style={{ paddingBottom: 20 }} item md={6} xs={12}>
           <CitiesAutocomplete />
         </Grid>
-
-        <Grid item xs={6}>
-          <IconButton aria-label="like">
-            <FavoriteIcon />
-          </IconButton>
-        </Grid>
-        <Grid item xs={6}>
+        <Grid item md={6} xs={12}>
           {!isLoading && (
-            <div className={classes.localWrapper}>
-              <img
-                alt="image"
-                src={`/assets/icons/${currentWeather.WeatherIcon}.png`}
-              />
-              {selectedCity.LocalizedName}
-              {currentWeather.Temperature.Metric.Value}
-              {currentWeather.Temperature.Metric.Unit}
-            </div>
+            <Box className={classes.localWeatherWrapper}>
+              {currentWeather.weather ? (
+                <>
+                  <img
+                    alt="image"
+                    src={`/assets/icons/${currentWeather.icon}.png`}
+                  />
+                  <Typography variant="h5" color="textSecondary" gutterBottom>
+                    {currentWeather.name}
+                  </Typography>
+                  <Typography variant="h4" component="h2">
+                    {currentWeather.weather}
+                    {currentWeather.unit}
+                  </Typography>
+                </>
+              ) : (
+                <>
+                  <Typography variant="h5" color="textSecondary" gutterBottom>
+                    {currentWeather.name}
+                  </Typography>
+                  <Typography variant="subtitle2" component="h2">
+                    Something went wrong
+                  </Typography>
+                </>
+              )}
+              <FavoriteButton></FavoriteButton>
+            </Box>
           )}
         </Grid>
         <Grid item xs={12}>
-          {daysArea}
+          {isLoading ? <Spinner></Spinner> : daysArea}
         </Grid>
       </Grid>
     </Container>

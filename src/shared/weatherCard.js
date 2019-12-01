@@ -9,25 +9,49 @@ import Typography from "@material-ui/core/Typography";
 const useStyles = makeStyles(theme => ({
   cardWrapper: {
     margin: 15,
-    padding: 25
+    padding: 15,
+    minWidth: 170
   }
 }));
 
 const WeatherCard = ({ card }) => {
   const classes = useStyles();
   return (
-    <Card className={classes.cardWrapper} key={card.Date}>
-      <CardContent>
-        <img alt={card.Date} src={`/assets/icons/${card.Day.Icon}.png`} />
-        <Typography variant="h5" color="textSecondary" gutterBottom>
-          <Moment format="ddd" date={card.Date}></Moment>
-        </Typography>
-        <Typography variant="h4" component="h2">
-          {card.Temperature.Maximum.Value}
-          {card.Temperature.Maximum.Unit}
-        </Typography>
-      </CardContent>
-    </Card>
+    <>
+      <Card className={classes.cardWrapper} key={card.name}>
+        <CardContent>
+          {card.weather ? (
+            <>
+              <img alt={card.date} src={`/assets/icons/${card.icon}.png`} />
+              <Typography variant="h6" color="textSecondary" gutterBottom>
+                {card.date ? (
+                  <Moment format="ddd" date={card.date}></Moment>
+                ) : (
+                  card.name
+                )}
+              </Typography>
+              <Typography variant="h5" component="h2">
+                {card.weather}
+                {card.unit}
+              </Typography>
+            </>
+          ) : (
+            <>
+              <Typography variant="h5" color="textSecondary" gutterBottom>
+                {card.date ? (
+                  <Moment format="ddd" date={card.date}></Moment>
+                ) : (
+                  card.name
+                )}
+              </Typography>
+              <Typography variant="subtitle2" component="h2">
+                Something went wrong
+              </Typography>
+            </>
+          )}
+        </CardContent>
+      </Card>
+    </>
   );
 };
 
