@@ -15,7 +15,7 @@ const FavoriteButton = () => {
   return (
     <Tooltip
       title={
-        selectedCity.isFavorite ? "Remove to favorites" : "Add from favorites"
+        selectedCity.isFavorite ? "Remove from favorites" : "Add to favorites"
       }
     >
       <IconButton
