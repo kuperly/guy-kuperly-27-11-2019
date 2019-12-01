@@ -1,5 +1,4 @@
 import { useReducer, useEffect } from "react";
-// import axios from "axios";
 import { useSnackbar } from "notistack";
 import axios from "../axios-config";
 import CONSTANCE from "../constance";
@@ -17,7 +16,7 @@ import {
 const initialState = {
   isLoading: true,
   darkMode: false,
-  favorites: [],
+  favorites: JSON.parse(window.localStorage.getItem("favorites")) || [],
   selectedCity: {},
   weekData: null,
   currentWeather: {},
@@ -82,7 +81,6 @@ const useGlobalState = () => {
   };
   const getCityByLocation = (lan, lon) => {
     dispach({ type: IS_LOADING, payload: true });
-    console.log("CONSTANCE", CONSTANCE);
     axios
       .get(
         // "assets/stubs/city-by-coords.json"
@@ -190,6 +188,7 @@ const useGlobalState = () => {
             name: day.Date,
             icon: day.Day.Icon,
             weather: day.Temperature.Maximum.Value,
+            minWeather: day.Temperature.Minimum.Value,
             unit: day.Temperature.Maximum.Unit,
             date: day.Date
           };

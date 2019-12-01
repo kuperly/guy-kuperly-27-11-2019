@@ -31,8 +31,8 @@ const WeatherCard = ({ card }) => {
                 )}
               </Typography>
               <Typography variant="h5" component="h2">
-                {card.weather}
-                {card.unit}
+                {card.minWeather ? `${parseInt(card.minWeather, 10)}° / ` : ""}
+                {`${parseInt(card.weather, 10)}°`}
               </Typography>
             </>
           ) : (

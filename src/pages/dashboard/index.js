@@ -67,8 +67,7 @@ function Dashboard() {
                     {currentWeather.name}
                   </Typography>
                   <Typography variant="h4" component="h2">
-                    {currentWeather.weather}
-                    {currentWeather.unit}
+                    {`${parseInt(currentWeather.weather, 10)}°`}
                   </Typography>
                 </>
               ) : (

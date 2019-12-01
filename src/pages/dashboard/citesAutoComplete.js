@@ -1,6 +1,7 @@
-import React, { useEffect, useContext } from "react";
+import React, { useEffect, useContext, useState } from "react";
 import axios from "../../axios-config";
 import CONSTANCE from "../../constance";
+import useDebounce from "../../utils/useDebounce";
 
 import { StateContext } from "../../stateManager/stateContext";
 import Autocomplete from "@material-ui/lab/Autocomplete";
@@ -8,25 +9,35 @@ import TextField from "@material-ui/core/TextField";
 
 const CitiesAutocomplete = () => {
   const { selectedCity } = useContext(StateContext);
-  const [inputValue, setInputValue] = React.useState("");
-  const [options, setOptions] = React.useState([]);
+  const [inputValue, setInputValue] = useState("");
+  const [options, setResults] = useState([]);
+  const debouncedSearchTerm = useDebounce(inputValue, 500);
 
   useEffect(() => {
-    axios
-      // .get("assets/stubs/autocomplete.json")
-      .get(
-        `locations/v1/cities/autocomplete?apikey=${CONSTANCE.key}&q=${inputValue}`
-      )
-      .then(res => {
-        const value = res.data ? res.data : [];
-        setOptions(value);
-      })
-      .catch(err => console.log(err));
-  }, [inputValue]);
+    if (debouncedSearchTerm) {
+      searchCharacters(debouncedSearchTerm).then(results => {
+        setResults(results);
+      });
+    } else {
+      setResults([]);
+    }
+  }, [debouncedSearchTerm]);
 
-  const handleChange = val => {
-    setInputValue(val);
-  };
+  function searchCharacters(inputValue) {
+    return (
+      axios
+        // .get("assets/stubs/autocomplete.json")
+        .get(
+          `locations/v1/cities/autocomplete?apikey=${CONSTANCE.key}&q=${inputValue}`
+        )
+        .then(res => {
+          const value = res.data ? res.data : [];
+          return value;
+        })
+        .catch(err => [])
+    );
+  }
+
   const hendleSelectedCity = data => {
     if (!data) return;
     const { Key, LocalizedName } = data;
@@ -41,7 +52,9 @@ const CitiesAutocomplete = () => {
       freeSolo
       disableClearable
       onChange={(ev, value) => hendleSelectedCity(value)}
-      onInputChange={(ev, val) => handleChange(val)}
+      onInputChange={(e, val) => {
+        setInputValue(val);
+      }}
       disableOpenOnFocus
       renderInput={params => (
         <TextField
