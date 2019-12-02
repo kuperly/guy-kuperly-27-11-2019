@@ -14,11 +14,15 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const WeatherCard = ({ card }) => {
+const WeatherCard = ({ card, cb }) => {
   const classes = useStyles();
   return (
     <>
-      <Card className={classes.cardWrapper} key={card.name}>
+      <Card
+        onClick={() => cb(card)}
+        className={classes.cardWrapper}
+        key={card.name}
+      >
         <CardContent>
           {card.weather ? (
             <>

@@ -7,6 +7,7 @@ import Spinner from "../../shared/Spinner/Spinner";
 const Favorites = props => {
   const {
     state: { isLoading, favorites },
+    selectedCity,
     handleFavoritesData
   } = useContext(StateContext);
 
@@ -14,8 +15,13 @@ const Favorites = props => {
     handleFavoritesData();
   }, []);
 
+  const onFacoriteSelect = card => {
+    selectedCity(card);
+    props.history.push("/posts/");
+  };
+
   const contentData = favorites.length ? (
-    <CardsGrid cards={favorites}></CardsGrid>
+    <CardsGrid cards={favorites} cb={onFacoriteSelect}></CardsGrid>
   ) : (
     <Typography variant="h6" component="h2" style={{ paddingTop: 25 }}>
       Please add some cities to favirite...
