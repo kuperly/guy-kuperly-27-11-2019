@@ -17,6 +17,7 @@ const Layout = props => {
   const {
     state: { darkMode }
   } = useContext(StateContext);
+  
   const theme = createMuiTheme({
     palette: {
       type: darkMode ? "dark" : "light"
